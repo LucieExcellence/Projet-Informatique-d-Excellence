@@ -1,4 +1,6 @@
 import numpy as np
+
+#Coucou
 n=17
 Bl=1
 Blc=2
@@ -185,7 +187,7 @@ def meilleurpion(etat,T): #compare les différentiels entre les pions
             Maxdif=difi
             meilleur_depart=caseD
             meilleurearrivee=caseA
-    return meilleurdepart,meilleurearrivée       
+    return meilleurdepart,meilleurearrivee       
             
         
        
