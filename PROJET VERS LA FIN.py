@@ -205,7 +205,10 @@ def hasard(etat):
                   
                
                
-               
+def fonctiontest():
+    A = 0 
+    return A
+    
                
                
                
