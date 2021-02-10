@@ -1,6 +1,6 @@
 import numpy as np
 
-#test modif
+#test modifs
 n=17
 Bl=1
 Blc=2
