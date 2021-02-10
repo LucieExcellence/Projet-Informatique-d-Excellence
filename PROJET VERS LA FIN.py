@@ -205,7 +205,7 @@ def hasard(etat):
                   
                
                
-               
+   #modif test
                
                
                
