@@ -1,6 +1,7 @@
 import numpy as np
+import random as rd
 
-#Coucou
+
 n=17
 Bl=1
 Blc=2
@@ -200,12 +201,13 @@ def hasard(etat):
         L.append(toutes_les_positions(etat,positions_pions[joueur][i],[])
         r=rd.choice(R)
         L2=L[r]
-        l2=rd.choice(L2)
+        l2= rd.choice(L2)
     return position_pion[joueur][r],l2    #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
                   
                
                
-   #modif test
+
+    
                
                
                
