@@ -11,7 +11,7 @@ objectif=[(0,0),(16,12),(12,16),(12,4),(4,12),(4,0),(0,4)]
 direction=[(0,1),(1,1),(1,0),(0,-1),(-1,-1),(-1,0)]
 #Chaque Joueur est représenté par un chiffre 
 ORDI=1
-ORDIT=6            
+ORDI_test=6            
 
 
 def init_plateau():
@@ -35,6 +35,7 @@ def init_plateau():
         for j in range (i+5,13):
             plateau[i,j]=J # on place les pions jaunes (3)
     for i in range (13,17):
+        for j in range()
             plateau[i,j]=R # on place les pions rouges (6)
     return plateau
 plateau = init_plateau()
@@ -66,8 +67,8 @@ def initialisation_position_pion(plateau):
 def debut_jeu(): #fonction qui lance toutes les fonctions d'initialisation
     P=init_plateau()
     T=tableau_distance()
-    posi_pions=initialisation_position_pion(plateau)
-    return [P,Bl,posi_pions,T]
+    posi_pion=initialisation_position_pion(plateau)
+    return P,Bl,posi_pion,T
 
 etat= debut_jeu() 
      
@@ -75,9 +76,9 @@ etat= debut_jeu()
     
 
                   
-def mouv_simple_possible(*caseD,etat):  
+def mouv_simple_possible(caseD,etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement simple
-    P,J, posi_pions, T = etat 
+    P,J, posi_pion, T = etat 
     l,c = caseD
     mouv_simple_possible=[]
     for (dl,dc) in direction:
@@ -87,7 +88,7 @@ def mouv_simple_possible(*caseD,etat):
     return mouv_simple_possible  
     
 
-def mouv_saut_possible(*caseD, etat):  
+def mouv_saut_possible(caseD, etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement sauté
     P,J,posi_pion , T =etat
     l,c = caseD
@@ -98,7 +99,7 @@ def mouv_saut_possible(*caseD, etat):
             mouv_saut_possible.append((l+2*dl,c+2*dc))
     return mouv_saut_possible
     
-def deplace(etat,*caseD, caseA): # on change les cases de depart et d'arrivée et la liste des positions du pion
+def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et la liste des positions du pion
     P,J,posi_pion,T =etat
     (i,j)=caseD
     (k,l)=caseA
@@ -107,10 +108,10 @@ def deplace(etat,*caseD, caseA): # on change les cases de depart et d'arrivée e
     pos[J].append(caseA) #on ajoute la position d'arrivée à la liste des pions du joueur 
     
     
-def saut(etat,L,*caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
+def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
     P,J,posi_pion,T =etat
     chemin=[]
-    for caseA in mouv_saut_possible(*caseD,etat): 
+    for caseA in mouv_saut_possible(caseD,etat): 
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas 
             chs=saut(P,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle de départ 
             if len(chs)==0: #si il ne peut pas aller plus loin on note juste la case d'arrivée
@@ -120,8 +121,8 @@ def saut(etat,L,*caseD):#renvoie toutes les positions que va pouvoir atteindre u
                     chemin.append([caseD]+ch)
     return(chemin)  
 
-def toutes_les_positions(*etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
-    P,J, posi_pions,T= etat 
+def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
+    P,J, posi_pion,T= etat 
     L=[]
     return  saut(P,L,caseD)+ mouv_simple_possible(caseD,P)
 
@@ -166,7 +167,8 @@ def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes 
 
 def meilleurpion(etat): #compare les différentiels entre les pions
     P,J,posi_pion,T=etat
-    positions_possibles=toutes_les_positions(etat,posi_pion[J][0])
+    caseD=posi_pion[J][0]
+    positions_possibles=toutes_les_positions(etat,caseD)
     caseA,Maxdif=meilleur_position(etat,posi_pion[J][0],positions_possibles) 
     meilleurdepart=posi_pion[J][0]
     for i in range(1,10):
@@ -180,8 +182,8 @@ def meilleurpion(etat): #compare les différentiels entre les pions
     return meilleurdepart,meilleurearrivée       
 
 def hasard(etat):
-    joueur=etat[1]
-    position=etat[2][joueur]
+    P,J,posi_pion,T=etat
+    position=posi_pion[J]
     L=[]
     R=[0,1,2,3,4,5,6,7,8,9]
     A = rd.choice(R)
@@ -189,7 +191,7 @@ def hasard(etat):
         L.append(toutes_les_positions(etat,position[i]))
     I = L[A]
     a=rd.choice(I)
-    return position_pion[joueur][A],a   #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
+    return position_pion[J][A],a   #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
 
 def coup_ordi(etat): 
     return meilleurpion(etat)
@@ -198,23 +200,26 @@ def coup_ordi_test(etat):
     return hasard(etat)
 
 def coup(etat):
-    if etat[1]==ORDI:
+    P,J,posi_pion,T=etat
+    if J==ORDI:
         return coup_ordi(etat)
-    if etat[1]==ORDIT:
+    if J== ORDI_test:
         return coup_ordi_test(etat)
         
 def fin_du_jeu(etat):
+    P,J,posi_pion,T=etat
     for i in range(10):
-        d= distance(etat,etat[2][i],T) 
+        d= distance(etat,posi_pion[i],T) 
         if d>4:
             return True
         return False
         
 def change_joueur(etat):
-    if etat[1]== 1:
-        etat[1]=6
-    elif etat[1]==6:
-        etat[1]=1
+    P,J,posi_pion,T=etat
+    if J== 1:
+        J=6
+    elif J==6:
+        J=1
     return etat
 
 
@@ -222,10 +227,18 @@ def change_joueur(etat):
 
 def prog_principal():
     etat= debut_jeu()
+    P,J,posi_pion,T=etat
     fini= False
     while not fini:
         coups= coup(etat)
         etat =deplace(etat,coups)
         fin_du_jeu(etat)
         etat= change_joueur(etat)
-    print('bravo_joueur_'+ string(etat[1]))
+    print('bravo_joueur_'+ string(J))
+               
+               
+               
+               
+               
+               
+               
