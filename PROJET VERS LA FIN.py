@@ -1,4 +1,5 @@
 import numpy as np
+import random as rd
 n=17
 Bl=1
 Blc=2
@@ -36,7 +37,7 @@ def init_plateau():
     for i in range (13,17):
             plateau[i,j]=R # on place les pions rouges (6)
     return plateau
-
+plateau = init_plateau()
 
 def tableau_distance(): # renvoie un tableau contenant les distances de chaque case à la case d'arrivée. Ce tableau fonctionne sur le carré central ( vert contre jaune)
     l=9*[0]
@@ -62,50 +63,21 @@ def initialisation_position_pion(plateau):
     return positions_pions
 
 
-
 def debut_jeu(): #fonction qui lance toutes les fonctions d'initialisation
     P=init_plateau()
     T=tableau_distance()
     posi_pions=initialisation_position_pion(plateau)
-    return [P,Bl,posi_pions],T
- 
+    return [P,Bl,posi_pions,T]
+
+etat= debut_jeu() 
      
-def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune)
-    P,J,posi_pion=etat
-    (l,c)=caseD
-    if J==Bl or J==R:
-        l,c=16-c,l-c+8
-    if J == Blc or J== N:
-        l,c= l-c+8,l 
-    return l,c 
 
-def distance(etat,caseD,T):
-    P,J,posi_pion=etat
-    l,c=translation(J,caseD)
-    if J== Bl or Blc or V:
-        return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes vides du plateau 
-    else:
-        return 16-T[l-4][c-4]
     
-def coup_ordi(etat,T): #
-    return meilleurpion(etat, T)
 
-def coup_ordi_test(etat):
-    return hasard(etat)
-
-def coup(etat,T):
-    if etat[1]==ORDI:
-        return coup_ordi(etat,T)
-    if etat[1]==ORDIT:
-        return coup_ordi_test(etat)
-        
-        
-
-
-
-def mouv_simple_possible(caseD,etat):  
+                  
+def mouv_simple_possible(*caseD,etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement simple
-    P,J, posi_pions = etat
+    P,J, posi_pions, T = etat 
     l,c = caseD
     mouv_simple_possible=[]
     for (dl,dc) in direction:
@@ -115,9 +87,9 @@ def mouv_simple_possible(caseD,etat):
     return mouv_simple_possible  
     
 
-def mouv_saut_possible(caseD, etat):  
+def mouv_saut_possible(*caseD, etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement sauté
-    P,J,posi_pion=etat
+    P,J,posi_pion , T =etat
     l,c = caseD
     mouv_saut_possible=[]
     for (dl,dc) in direction:
@@ -126,8 +98,8 @@ def mouv_saut_possible(caseD, etat):
             mouv_saut_possible.append((l+2*dl,c+2*dc))
     return mouv_saut_possible
     
-def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et la liste des positions du pion
-    P,J,posi_pion=etat
+def deplace(etat,*caseD, caseA): # on change les cases de depart et d'arrivée et la liste des positions du pion
+    P,J,posi_pion,T =etat
     (i,j)=caseD
     (k,l)=caseA
     P[i,j], P[k,l]= P[k,l],P[i,j] #la case d'arrivée prend la valeur du joueur et celle de départ devient 0
@@ -135,10 +107,10 @@ def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et
     pos[J].append(caseA) #on ajoute la position d'arrivée à la liste des pions du joueur 
     
     
-def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
-    P,J,posi_pion=etat
+def saut(etat,L,*caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
+    P,J,posi_pion,T =etat
     chemin=[]
-    for caseA in mouv_saut_possible(caseD,P): 
+    for caseA in mouv_saut_possible(*caseD,etat): 
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas 
             chs=saut(P,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle de départ 
             if len(chs)==0: #si il ne peut pas aller plus loin on note juste la case d'arrivée
@@ -147,22 +119,42 @@ def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un
                 for ch in chs: #sinon pour chaque nouvelle case possible, on note le chemin que l'on a fait pour y arriver
                     chemin.append([caseD]+ch)
     return(chemin)  
-       
-       
-def toutes_les_positions(etat, caseD,T):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
-    P,J,posi_pion=etat
+
+def toutes_les_positions(*etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
+    P,J, posi_pions,T= etat 
+    L=[]
     return  saut(P,L,caseD)+ mouv_simple_possible(caseD,P)
+
+def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune)
+    P , J , posi_pion , T = etat
+    (l,c)=caseD
+    if J==Bl or J==R:
+        l,c=16-c,l-c+8
+    if J == Blc or J== N:
+        l,c= l-c+8,l 
+    return l,c 
+
+def distance(etat,caseD):
+    P,J,posi_pion, T =etat
+    l,c=translation(J,caseD)
+    if J== Bl or Blc or V:
+        return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes vides du plateau 
+    else:
+        return 16-T[l-4][c-4]       
+       
+
     
      
-def differentiel(caseD,caseA,etat,T): #calcul la distance parcourue par un pion
-     P,J,posi_pion=etat
+def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
+     P,J,posi_pion,T=etat
      return distance(P, J,caseD,T)-distance(P,J,caseA,T)   
 
 
 def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
-    P,J,posi_pion=etat
+    P,J,posi_pion,T=etat
     position= caseD
     d=0
+    toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range( len(toutes_les_posi)):
         D=differentiel(caseD,toutes_les_posi[i],P,J,T)
         if D>d:
@@ -172,40 +164,68 @@ def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes 
 
 
 
-def meilleurpion(etat,T): #compare les différentiels entre les pions
-    P,J,posi_pion=etat
-    positions_possibles=toutes_les_positions(P,positions_pions[J][0])
-    caseA,Maxdif=meilleur_position(J,P,T,positions_pions[J][0],positions_possibles) 
-    meilleurdepart=positions_pions[J][0]
+def meilleurpion(etat): #compare les différentiels entre les pions
+    P,J,posi_pion,T=etat
+    positions_possibles=toutes_les_positions(etat,posi_pion[J][0])
+    caseA,Maxdif=meilleur_position(etat,posi_pion[J][0],positions_possibles) 
+    meilleurdepart=posi_pion[J][0]
     for i in range(1,10):
-        caseD=positions_pions[J][i]
-        positions_possibles=toutes_les_positions(P,positions_pions[J][i])
+        caseD=posi_pion[J][i]
+        positions_possibles=toutes_les_positions(P,posi_pion[J][i])
         caseA,difi=meilleur_position(J,P,T,caseD,positions_possibles)
         if difi>Maxdif:
             Maxdif=difi
             meilleur_depart=caseD
             meilleurearrivee=caseA
     return meilleurdepart,meilleurearrivée       
-            
-        
-       
-        
-    
+
 def hasard(etat):
+    joueur=etat[1]
+    position=etat[2][joueur]
     L=[]
     R=[0,1,2,3,4,5,6,7,8,9]
-    for i in range(9):
-        L.append(toutes_les_positions(etat,positions_pions[joueur][i],[])
-        r=rd.choice(R)
-        L2=L[r]
-        l2=rd.choice(L2)
-    return position_pion[joueur][r],l2    #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
-                  
-               
-               
-               
-               
-               
-               
-               
-               
+    A = rd.choice(R)
+    for i in range(10):
+        L.append(toutes_les_positions(etat,position[i]))
+    I = L[A]
+    a=rd.choice(I)
+    return position_pion[joueur][A],a   #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
+
+def coup_ordi(etat): 
+    return meilleurpion(etat)
+
+def coup_ordi_test(etat):
+    return hasard(etat)
+
+def coup(etat):
+    if etat[1]==ORDI:
+        return coup_ordi(etat)
+    if etat[1]==ORDIT:
+        return coup_ordi_test(etat)
+        
+def fin_du_jeu(etat):
+    for i in range(10):
+        d= distance(etat,etat[2][i],T) 
+        if d>4:
+            return True
+        return False
+        
+def change_joueur(etat):
+    if etat[1]== 1:
+        etat[1]=6
+    elif etat[1]==6:
+        etat[1]=1
+    return etat
+
+
+
+
+def prog_principal():
+    etat= debut_jeu()
+    fini= False
+    while not fini:
+        coups= coup(etat)
+        etat =deplace(etat,coups)
+        fin_du_jeu(etat)
+        etat= change_joueur(etat)
+    print('bravo_joueur_'+ string(etat[1]))
