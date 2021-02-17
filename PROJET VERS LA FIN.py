@@ -114,7 +114,7 @@ def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un
     chemin=[]
     for caseA in mouv_saut_possible(caseD,etat): 
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas 
-            chs=saut(P,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle de départ 
+            chs=saut(etat,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle de départ 
             if len(chs)==0: #si il ne peut pas aller plus loin on note juste la case d'arrivée
                 chemin.append([caseD,caseA])
             else :
@@ -125,7 +125,7 @@ def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un
 def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
     P,J, posi_pion,T= etat 
     L=[]
-    return  saut(P,L,caseD)+ mouv_simple_possible(caseD,P)
+    return  saut(etat,L,caseD)+ mouv_simple_possible(caseD,etat)
 
 def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour facilité les calcules de distances (plus facile a calculer dans unn carré que dans un  losange.
     P , J , posi_pion , T = etat
@@ -158,7 +158,7 @@ def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes 
     d=0
     toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range( len(toutes_les_posi)):#on calcule pour un pion le différentiel de chaque case atteignable. si D est supérieur à l'ancien différentiel, alors on remplace d par D et la case d'arrivée. 
-        D=differentiel(caseD,toutes_les_posi[i],P,J,T)
+        D=differentiel(caseD,toutes_les_posi[i],etat)
         if D>d:
             position= toutes_les_posi[i]
             d=D
@@ -208,7 +208,7 @@ def coup(etat):#fonction qui effectue en fonction du joueur qui joue le coup cho
 def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     P,J,posi_pion,T=etat
     for i in range(10):
-        d= distance(etat,posi_pion[i],T) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
+        d= distance(etat,posi_pion[i]) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>4:
             return True
     return False
