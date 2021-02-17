@@ -79,7 +79,7 @@ def debut_jeu(): #fonction qui lance toutes les fonctions d'initialisation
                   
 def mouv_simple_possible(caseD,etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement simple
-    [P,J, posi_pion, T] = etat 
+    P,J, posi_pion, T = etat 
     l,c = caseD
     mouv_simple_possible=[]
     for (dl,dc) in direction:
@@ -91,7 +91,7 @@ def mouv_simple_possible(caseD,etat):
 
 def mouv_saut_possible(caseD, etat):  
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement sauté
-    [P,J,posi_pion , T] =etat
+    P,J,posi_pion , T =etat
     l,c = caseD
     mouv_saut_possible=[]
     for (dl,dc) in direction:
@@ -101,7 +101,7 @@ def mouv_saut_possible(caseD, etat):
     return mouv_saut_possible
     
 def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et la liste des positions du pion
-    [P,J,posi_pion,T] =etat
+    P,J,posi_pion,T =etat
     (i,j)=caseD
     (k,l)=caseA
     P[i,j], P[k,l]= P[k,l],P[i,j] #la case d'arrivée prend la valeur du joueur et celle de départ devient 0
@@ -110,7 +110,7 @@ def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et
     
     
 def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
-    [P,J,posi_pion,T] = etat
+    P,J,posi_pion,T = etat
     chemin=[]
     for caseA in mouv_saut_possible(caseD,etat): 
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas 
@@ -123,12 +123,12 @@ def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un
     return(chemin)  
 
 def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
-    [P,J, posi_pion,T]= etat 
+    P,J, posi_pion,T= etat 
     L=[]
     return  saut(P,L,caseD)+ mouv_simple_possible(caseD,P)
 
 def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour facilité les calcules de distances (plus facile a calculer dans unn carré que dans un  losange.
-    [P , J , posi_pion , T] = etat
+    P , J , posi_pion , T = etat
     (l,c)=caseD
     if J==Bl or J==R:
         l,c=16-c,l-c+8
@@ -137,7 +137,7 @@ def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa 
     return l,c 
 
 def distance(etat,caseD):# dans cette fonction on vient récupérer dans le tableau de distance calculé au début du programme la distance à l'objectif de son équivalent dans le carré central (vert contre jaune)
-    [P,J,posi_pion, T] =etat
+    P,J,posi_pion, T=etat
     l,c=translation(J,caseD)
     if J== Bl or Blc or V:
         return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes vides du plateau 
@@ -148,12 +148,12 @@ def distance(etat,caseD):# dans cette fonction on vient récupérer dans le tabl
     
      
 def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
-     [P,J,posi_pion,T]=etat
+     P,J,posi_pion,T=etat
      return distance(P, J,caseD,T)-distance(P,J,caseA,T)   
 
 
 def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     position= caseD
     d=0
     toutes_les_posi= toutes_les_positions(etat, caseD)
@@ -167,7 +167,7 @@ def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes 
 
 
 def meilleurpion(etat): #compare les différentiels entre les pions
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
     positions_possibles=toutes_les_positions(etat,caseD)
     caseA,Maxdif=meilleur_position(etat,posi_pion[J][0],positions_possibles) #on regarde pour ce pion quelle est la meilleure case d'arrivée et on note le différentiel entre cette meilleure case d'arrivée et la case de départ
@@ -183,7 +183,7 @@ def meilleurpion(etat): #compare les différentiels entre les pions
     return meilleurdepart,meilleurearrivée       
 
 def hasard(etat):#fonction qui determine au hasard un coup a jouer pour l'ordinateur qui joue de manière aléatoire.
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     position=posi_pion[J]
     L=[]
     R=[0,1,2,3,4,5,6,7,8,9]
@@ -199,14 +199,14 @@ def coup_ordi(etat): #mëme fonction que meilleur pion mais pour rendre la Progr
 
 
 def coup(etat):#fonction qui effectue en fonction du joueur qui joue le coup chosit par l'intelligence artificielle qui joue.
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     if J==ORDI:
         return coup_ordi(etat)
     if J== ORDI_test:
         return hasard(etat)
         
 def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     for i in range(10):
         d= distance(etat,posi_pion[i],T) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>4:
@@ -214,7 +214,7 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     return False
         
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     if J== 1:
         J=6
     elif J==6:
@@ -226,7 +226,7 @@ def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueur
 
 def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.
     etat= debut_jeu()
-    [P,J,posi_pion,T]=etat
+    P,J,posi_pion,T=etat
     fini= False
     while not fini:
         coups= coup(etat)
