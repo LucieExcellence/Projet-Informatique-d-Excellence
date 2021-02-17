@@ -138,7 +138,7 @@ def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa 
 
 def distance(etat,caseD):# dans cette fonction on vient récupérer dans le tableau de distance calculé au début du programme la distance à l'objectif de son équivalent dans le carré central (vert contre jaune)
     P,J,posi_pion, T=etat
-    l,c=translation(J,caseD)
+    l,c=translation(etat,caseD)
     if J== Bl or Blc or V:
         return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes vides du plateau 
     else:
@@ -149,7 +149,7 @@ def distance(etat,caseD):# dans cette fonction on vient récupérer dans le tabl
      
 def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
      P,J,posi_pion,T=etat
-     return distance(P, J,caseD,T)-distance(P,J,caseA,T)   
+     return distance(etat,caseD)-distance(etat,caseA)   
 
 
 def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
@@ -174,8 +174,8 @@ def meilleurpion(etat): #compare les différentiels entre les pions
     meilleurdepart=posi_pion[J][0]
     for i in range(1,10):#pour tous les autres pions, on réalise la même manipulation, si le différentiel est meilleur que pour la caseD, on remplace alors l'ancien référentiel par le nouveau et on change aussi la caseD par la position du nouveau pion.
         caseD=posi_pion[J][i]
-        positions_possibles=toutes_les_positions(P,posi_pion[J][i])
-        caseA,difi=meilleur_position(J,P,T,caseD,positions_possibles)
+        positions_possibles=toutes_les_positions(etat,posi_pion[J][i])
+        caseA,difi=meilleur_position(etat,caseD,positions_possibles)
         if difi>Maxdif:
             Maxdif=difi
             meilleur_depart=caseD
@@ -216,9 +216,9 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
     P,J,posi_pion,T=etat
     if J== 1:
-        J=6
+        etat[1]=6
     elif J==6:
-        J=1
+        etat[1]=1
     return etat
 
 
