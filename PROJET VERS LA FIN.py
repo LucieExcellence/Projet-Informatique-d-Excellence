@@ -1,5 +1,4 @@
-#bonjour Madame, nous avons corrigé toutes les erreurs à priori mais nous rencontrons de nouveau des erreurs. Nous pensons que c'est lié à notre caseD mais c'est juste une supposition. Pyzo nous renvoie lorsque l'on lance le programme principal:   File "/Users/nicolascastan/Documents/PROJET VERS LA FIN.py", line 134, in translation    / l,c=16-c,l-c+8 / TypeError: unsupported operand type(s) for -: 'int' and 'tuple' . Je suis pas sur de la signification de cette erreur donc nous n'avons aucune idée de la réelle erreur a corriger. merci de votre aide, Nicolas castan
-
+#bonjour Madame, nous avons corrigé toutes les erreurs à priori cette fois-ci. notre programme fonctionne sur 2 tours mais plante au troisième et on ne sait encore pas pourquoi. On commence à voir le bout donc on est très heureux. Merci de passer du temps pour nous aider. 
 import numpy as np
 import random as rd
 n=17
@@ -181,21 +180,18 @@ def meilleurpion(etat): #compare les différentiels entre les pions
             meilleur_depart=caseD
             meilleure_arrivee=caseA
     return meilleur_depart,meilleure_arrivee       
+  
 
 def hasard(etat):#fonction qui determine au hasard un coup a jouer pour l'ordinateur qui joue de manière aléatoire.
     P,J,posi_pion,T=etat
     position=posi_pion[J]
-    caseA=[]
-    R=[0,1,2,3,4,5,6,7,8,9]
-    A = rd.choice(R)
-    for i in range(10):
-        couple_possible=toutes_les_positions(etat,position[i])
-        for couple in couple_possible:
-            caseA.append(couple[-1])
-    I = caseA[A]
-    a=rd.choice(I)
-    return position_pion[J][A],a   #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
-
+    caseD=rd.choice(position)
+    while toutes_les_positions(etat,caseD)==[]:
+        caseD=rd.choice(position)
+    caseA=rd.choice(toutes_les_positions(etat,caseD))[-1]
+    return caseD,caseA#renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
+    
+    
 def coup_ordi(etat): #mëme fonction que meilleur pion mais pour rendre la Programme plus lisible
     return meilleurpion(etat)
 
@@ -210,10 +206,8 @@ def coup(etat):#fonction qui effectue en fonction du joueur qui joue le coup cho
 def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     P,J,posi_pion,T=etat
     for i in range(10):
-        couple_possible= toutes_les_positions(etat,posi_pion[i])
-        for couple in couple_possible:
-            caseD,caseA=couple
-            d= distance(etat,caseD,caseA) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
+        pion=posi_pion[J][i]
+        d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>4:
             return True
     return False
@@ -236,7 +230,6 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         caseD,caseA= coup(etat)
         print(caseD,caseA)
         deplace(etat,caseD,caseA)
-        print(etat)
         fin_du_jeu(etat)
         change_joueur(etat)
         print(etat)
