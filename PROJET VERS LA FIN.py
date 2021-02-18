@@ -86,7 +86,7 @@ def mouv_simple_possible(caseD,etat):
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0: 
         # on vérifie que la case d'arrivée est libre et dans le plateau 
-            mouv_simple_possible.append([(l,c),(l+dl,c+dc)])
+            mouv_simple_possible.append((l+dl,c+dc))
     return mouv_simple_possible  
     
 
@@ -159,9 +159,10 @@ def meilleur_position(etat,caseD):# compare la distance parcourue pour toutes le
     d=0
     toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range( len(toutes_les_posi)):#on calcule pour un pion le différentiel de chaque case atteignable. si D est supérieur à l'ancien différentiel, alors on remplace d par D et la case d'arrivée. 
-        D=differentiel(caseD,toutes_les_posi[i],etat)
+        caseD,caseA=toutes_les_posi[i]
+        D=differentiel(caseD,caseA,etat)
         if D>d:
-            position= toutes_les_posi[i]
+            position= caseA
             d=D
     return (position,d) 
 
@@ -171,25 +172,27 @@ def meilleurpion(etat): #compare les différentiels entre les pions
     P,J,posi_pion,T=etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
     caseA,Maxdif=meilleur_position(etat,caseD) #on regarde pour ce pion quelle est la meilleure case d'arrivée et on note le différentiel entre cette meilleure case d'arrivée et la case de départ
-    meilleurdepart=posi_pion[J][0]
+    meilleur_depart=posi_pion[J][0]
     for i in range(1,10):#pour tous les autres pions, on réalise la même manipulation, si le différentiel est meilleur que pour la caseD, on remplace alors l'ancien référentiel par le nouveau et on change aussi la caseD par la position du nouveau pion.
         caseD=posi_pion[J][i]
         caseA,difi=meilleur_position(etat,caseD)
         if difi>Maxdif:
             Maxdif=difi
             meilleur_depart=caseD
-            meilleurearrivee=caseA
-    return meilleurdepart,meilleurearrivée       
+            meilleure_arrivee=caseA
+    return meilleur_depart,meilleure_arrivee       
 
 def hasard(etat):#fonction qui determine au hasard un coup a jouer pour l'ordinateur qui joue de manière aléatoire.
     P,J,posi_pion,T=etat
     position=posi_pion[J]
-    L=[]
+    caseA=[]
     R=[0,1,2,3,4,5,6,7,8,9]
     A = rd.choice(R)
     for i in range(10):
-        L.append(toutes_les_positions(etat,position[i]))
-    I = L[A]
+        couple_possible=toutes_les_positions(etat,position[i])
+        for couple in couple_possible:
+            caseA.append(couple[-1])
+    I = caseA[A]
     a=rd.choice(I)
     return position_pion[J][A],a   #renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.     
 
@@ -232,10 +235,4 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         fin_du_jeu(etat)
         change_joueur(etat)
     print('bravo_joueur_'+ string(J))
-               
-               
-               
-               
-               
-               
                
