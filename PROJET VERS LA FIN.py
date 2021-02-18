@@ -129,6 +129,7 @@ def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_sim
 
 def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour facilité les calcules de distances (plus facile a calculer dans unn carré que dans un  losange.
     P , J , posi_pion , T = etat
+    J=6
     l,c = caseD
     if J==Bl or J==R:
         l,c=16-c,l-c+8
@@ -138,8 +139,9 @@ def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa 
 
 def distance(etat,caseD):# dans cette fonction on vient récupérer dans le tableau de distance calculé au début du programme la distance à l'objectif de son équivalent dans le carré central (vert contre jaune)
     P,J,posi_pion, T=etat
+    J=6
     l,c=translation(etat,caseD)
-    if J== Bl or Blc or V:
+    if J== Bl or J==Blc or J==V:
         return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes vides du plateau 
     else:
         return 16-T[l-4][c-4]       
@@ -209,8 +211,8 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
         pion=posi_pion[J][i]
         d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>4:
-            return True
-    return False
+            return False
+    return True
         
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
     P,J,posi_pion,T=etat
@@ -230,8 +232,8 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         caseD,caseA= coup(etat)
         print(caseD,caseA)
         deplace(etat,caseD,caseA)
-        fin_du_jeu(etat)
+        fini=fin_du_jeu(etat)
         change_joueur(etat)
         print(etat)
-    print('bravo_joueur_'+ string(J))
+    print('bravo_joueur_'+ str(J))
                
