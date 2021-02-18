@@ -1,4 +1,5 @@
-#à l'attention de Madame Courant, les problèmes majeurs que nous rencontrons sont à propos de notre etat, lorsque l'on écrit par exemple [P,J, posi_pion, T] = etat au debut de certaines fonction, pyzo nous dit :too many values to unpack (expected 4). pareil, lorsque l'on note en entrée caseD cela correspond pour nous à un couple de valeur (les coordonnées dans la matrice représentative de notre plateau) Or pyzo semble le prendre pour une valeur simple. nous avons essayer la rédaction : def saut(*etat,L,*caseD) mais cela ne résolvait que partiellement nos problème. Par ailleurs, il nous semble que dans notre fonction prog_principal qui éffectue une partie il y a une erreur mais je n'arrive pas à la voir. Si vous avez besoin que l'on vous explique nos notations ou certaines parties peu claires du programme n'hésitée pas à nous demander. Merci d'avance. Tout le groupe des dames chinoises!!! :) 
+#bonjour Madame, nous avons corrigé toutes les erreurs à priori mais nous rencontrons de nouveau des erreurs. Nous pensons que c'est lié à notre caseD mais c'est juste une supposition. Pyzo nous renvoie lorsque l'on lance le programme principal:   File "/Users/nicolascastan/Documents/PROJET VERS LA FIN.py", line 134, in translation    / l,c=16-c,l-c+8 / TypeError: unsupported operand type(s) for -: 'int' and 'tuple' . Je suis pas sur de la signification de cette erreur donc nous n'avons aucune idée de la réelle erreur a corriger. merci de votre aide, Nicolas castan
+
 import numpy as np
 import random as rd
 n=17
@@ -85,7 +86,7 @@ def mouv_simple_possible(caseD,etat):
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0: 
         # on vérifie que la case d'arrivée est libre et dans le plateau 
-            mouv_simple_possible.append([(l,c),(l+dl,c+dc)])
+            mouv_simple_possible.append((l+dl,c+dc))
     return mouv_simple_possible  
     
 
@@ -105,8 +106,8 @@ def deplace(etat,caseD, caseA): # on change les cases de depart et d'arrivée et
     (i,j)=caseD
     (k,l)=caseA
     P[i,j], P[k,l]= P[k,l],P[i,j] #la case d'arrivée prend la valeur du joueur et celle de départ devient 0
-    pos[J].remove(caseD)  #on enleve le pion de départ de la liste des pions du joueur
-    pos[J].append(caseA) #on ajoute la position d'arrivée à la liste des pions du joueur 
+    posi_pion[J].remove(caseD)  #on enleve le pion de départ de la liste des pions du joueur
+    posi_pion[J].append(caseA) #on ajoute la position d'arrivée à la liste des pions du joueur 
     
     
 def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide 
@@ -129,7 +130,7 @@ def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_sim
 
 def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour facilité les calcules de distances (plus facile a calculer dans unn carré que dans un  losange.
     P , J , posi_pion , T = etat
-    (l,c)=caseD
+    l,c = caseD
     if J==Bl or J==R:
         l,c=16-c,l-c+8
     if J == Blc or J== N:
@@ -152,7 +153,7 @@ def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
      return distance(etat,caseD)-distance(etat,caseA)   
 
 
-def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
+def meilleur_position(etat,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
     P,J,posi_pion,T=etat
     position= caseD
     d=0
@@ -169,13 +170,11 @@ def meilleur_position(etat,L,caseD):# compare la distance parcourue pour toutes 
 def meilleurpion(etat): #compare les différentiels entre les pions
     P,J,posi_pion,T=etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
-    positions_possibles=toutes_les_positions(etat,caseD)
-    caseA,Maxdif=meilleur_position(etat,posi_pion[J][0],positions_possibles) #on regarde pour ce pion quelle est la meilleure case d'arrivée et on note le différentiel entre cette meilleure case d'arrivée et la case de départ
+    caseA,Maxdif=meilleur_position(etat,caseD) #on regarde pour ce pion quelle est la meilleure case d'arrivée et on note le différentiel entre cette meilleure case d'arrivée et la case de départ
     meilleurdepart=posi_pion[J][0]
     for i in range(1,10):#pour tous les autres pions, on réalise la même manipulation, si le différentiel est meilleur que pour la caseD, on remplace alors l'ancien référentiel par le nouveau et on change aussi la caseD par la position du nouveau pion.
         caseD=posi_pion[J][i]
-        positions_possibles=toutes_les_positions(etat,posi_pion[J][i])
-        caseA,difi=meilleur_position(etat,caseD,positions_possibles)
+        caseA,difi=meilleur_position(etat,caseD)
         if difi>Maxdif:
             Maxdif=difi
             meilleur_depart=caseD
@@ -219,7 +218,6 @@ def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueur
         etat[1]=6
     elif J==6:
         etat[1]=1
-    return etat
 
 
 
@@ -230,9 +228,9 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
     fini= False
     while not fini:
         coups= coup(etat)
-        etat =deplace(etat,coups)
+        deplace(etat,coups)
         fin_du_jeu(etat)
-        etat= change_joueur(etat)
+        change_joueur(etat)
     print('bravo_joueur_'+ string(J))
                
                
