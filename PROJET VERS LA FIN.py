@@ -86,7 +86,7 @@ def mouv_simple_possible(caseD,etat):
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0: 
         # on vérifie que la case d'arrivée est libre et dans le plateau 
-            mouv_simple_possible.append((l+dl,c+dc))
+            mouv_simple_possible.append([(l,c),(l+dl,c+dc)])
     return mouv_simple_possible  
     
 
@@ -210,7 +210,10 @@ def coup(etat):#fonction qui effectue en fonction du joueur qui joue le coup cho
 def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     P,J,posi_pion,T=etat
     for i in range(10):
-        d= distance(etat,posi_pion[i]) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
+        couple_possible= toutes_les_positions(etat,posi_pion[i])
+        for couple in couple_possible:
+            caseD,caseA=couple
+            d= distance(etat,caseD,caseA) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>4:
             return True
     return False
@@ -230,9 +233,12 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
     P,J,posi_pion,T=etat
     fini= False
     while not fini:
-        coups= coup(etat)
-        deplace(etat,coups)
+        caseD,caseA= coup(etat)
+        print(caseD,caseA)
+        deplace(etat,caseD,caseA)
+        print(etat)
         fin_du_jeu(etat)
         change_joueur(etat)
+        print(etat)
     print('bravo_joueur_'+ string(J))
                
