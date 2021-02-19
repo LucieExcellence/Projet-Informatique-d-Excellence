@@ -85,8 +85,8 @@ def mouv_simple_possible(caseD,etat):
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0: 
         # on vérifie que la case d'arrivée est libre et dans le plateau 
-            mouv_simple_possible.append([(l,c),(l+dl,c+dc)])
-    return mouv_simple_possible  
+            mouv_simple.append([(l,c),(l+dl,c+dc)])
+    return mouv_simple  
     
 
 def mouv_saut_possible(caseD, etat):  
