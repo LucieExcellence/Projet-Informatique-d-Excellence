@@ -1,4 +1,4 @@
-#bonjour Madame, nous avons corrigé toutes les erreurs à priori cette fois-ci. notre programme fonctionne sur 2 tours mais plante au troisième et on ne sait encore pas pourquoi. On commence à voir le bout donc on est très heureux. Merci de passer du temps pour nous aider. 
+#bonjour Madame, nous revoila pour une enième tentative!! vous aviez raison ce n'est pas la dernière fois. apres une après-midi de plus notre programme ne marche toujours pas! on a pas pu régler le problème de la partie qui dure que deux tours mais on voulait vous envoyer le programme corrigé avant ce soir. il me semble que le problème vient du fait que les joueurs s'intervertissent mal ou quelque chose dans la genre.
 import numpy as np
 import random as rd
 n=17
@@ -81,7 +81,7 @@ def mouv_simple_possible(caseD,etat):
 #renvoie une liste des coordonées des cases d'arrivées possibles pour un pion donné en un déplacement simple
     P,J, posi_pion, T = etat 
     l,c = caseD
-    mouv_simple_possible=[]
+    mouv_simple=[]
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0: 
         # on vérifie que la case d'arrivée est libre et dans le plateau 
@@ -174,6 +174,7 @@ def meilleurpion(etat): #compare les différentiels entre les pions
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
     caseA,Maxdif=meilleur_position(etat,caseD) #on regarde pour ce pion quelle est la meilleure case d'arrivée et on note le différentiel entre cette meilleure case d'arrivée et la case de départ
     meilleur_depart=posi_pion[J][0]
+    meilleure_arrivee=caseA
     for i in range(1,10):#pour tous les autres pions, on réalise la même manipulation, si le différentiel est meilleur que pour la caseD, on remplace alors l'ancien référentiel par le nouveau et on change aussi la caseD par la position du nouveau pion.
         caseD=posi_pion[J][i]
         caseA,difi=meilleur_position(etat,caseD)
@@ -210,6 +211,7 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     for i in range(10):
         pion=posi_pion[J][i]
         d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
+        print(d)
         if d>4:
             return False
     return True
