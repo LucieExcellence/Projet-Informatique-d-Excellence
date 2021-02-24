@@ -217,10 +217,7 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
 
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
     P,J,posi_pion,T=etat
-    if J== 1:
-        etat[1]=6
-    elif J==6:
-        etat[1]=1
+    etat[1]=7-J
 
 
 
@@ -250,7 +247,7 @@ def demande_coup(etat):
             fini=False
             print('Le coup est impossible')
 
-def coup(etat,mode_de_jeu):
+def coup(etat,mode_de_jeu, J1):
     P,J,posi_pion,T=etat
     if mode_de_jeu == 1:
         if J == J1:
@@ -269,7 +266,7 @@ def coup(etat,mode_de_jeu):
             return hasard(etat)
 
 def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.
-    mode_de_jeu = input("Quel est le mode de jeu ?") #rentrer : [humain,ordi](1) ou [humain,ordi_hazard](2) ou [ordi , ordi_hazard](3)
+    mode_de_jeu = int(input("Quel est le mode de jeu ?")) #rentrer : [humain,ordi](1) ou [humain,ordi_hazard](2) ou [ordi , ordi_hazard](3)
     joueurs = []
     if mode_de_jeu != 3:
         J1 = input("Choississez la couleur de vos pions ")#Rentrer un entier entre 1 et 6
@@ -287,7 +284,8 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
     fini= False
     S=0
     while not fini:
-        caseD,caseA= coup(etat,mode_de_jeu)
+        print(coup(etat,mode_de_jeu,J1))
+        caseD, caseA = coup(etat,mode_de_jeu,J1)
         deplace(etat,caseD,caseA)
         fini=fin_du_jeu(etat)
         change_joueur(etat)
