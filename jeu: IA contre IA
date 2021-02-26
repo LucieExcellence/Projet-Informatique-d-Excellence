@@ -14,8 +14,8 @@ R=6
 objectif=[(0,0),(16,12),(12,16),(12,4),(4,12),(4,0),(0,4)]
 direction=[(0,1),(1,1),(1,0),(0,-1),(-1,-1),(-1,0)]
 #Chaque Joueur est représenté par un chiffre
-ORDI1=1
-ORDI2=6
+ORDI1=4
+ORDI2=3
 
 
 def init_plateau():
@@ -72,11 +72,7 @@ def debut_jeu(): #fonction qui lance toutes les fonctions d'initialisation
     P=init_plateau()
     T=tableau_distance()
     posi_pion=initialisation_position_pion(plateau)
-    return [P,Bl,posi_pion,T]
-
-
-
-
+    return [P,Ja,posi_pion,T]
 
 
 
@@ -161,15 +157,18 @@ def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
 
 def meilleur_position(etat,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
     P,J,posi_pion,T=etat
-    position= caseD
-    d=-1
+    d=0
+    L=[caseD]
     toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range(len(toutes_les_posi)):#on calcule pour un pion le différentiel de chaque case atteignable. si D est supérieur à l'ancien différentiel, alors on remplace d par D et la case d'arrivée.
         caseDd,caseA=toutes_les_posi[i]
         D=differentiel(caseDd,caseA,etat)
         if D>d:
-            position= caseA
+            L = [caseA]
             d=D
+        elif D==d:
+            L.append(caseA)
+    position = rd.choice(L)
     return (position,d)
 
 
@@ -222,10 +221,7 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
 
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
     P,J,posi_pion,T=etat
-    if J== 1:
-        etat[1]=6
-    elif J==6:
-        etat[1]=1
+    etat[1]=7-J
 
 
 def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.
@@ -240,6 +236,7 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         change_joueur(etat)
         s+=1
         print(etat)
-    print('bravo_joueur_'+ str(J),s)
+    change_joueur(etat)
+    print('bravo_joueur_'+ str(etat[1]),s)
     print(etat)
     
