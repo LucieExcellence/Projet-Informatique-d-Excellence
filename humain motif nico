@@ -2,6 +2,7 @@
 
 
 
+
 import numpy as np
 import random as rd
 n=17
@@ -68,16 +69,11 @@ def initialisation_position_pion(plateau):
     return positions_pions
 
 
-def debut_jeu(): #fonction qui lance toutes les fonctions d'initialisation
+def debut_jeu(J): #fonction qui lance toutes les fonctions d'initialisation
     P=init_plateau()
     T=tableau_distance()
     posi_pion=initialisation_position_pion(plateau)
-    return [P,Bl,posi_pion,T]
-
-
-
-
-
+    return [P,J,posi_pion,T]
 
 
 def mouv_simple_possible(caseD,etat):
@@ -161,15 +157,18 @@ def differentiel(caseD,caseA,etat): #calcul la distance parcourue par un pion
 
 def meilleur_position(etat,caseD):# compare la distance parcourue pour toutes les cases atteignbles et choisit la meilleure case (celle qui aura avancer le plus)
     P,J,posi_pion,T=etat
-    position= caseD
     d=0
+    L=[caseD]
     toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range(len(toutes_les_posi)):#on calcule pour un pion le différentiel de chaque case atteignable. si D est supérieur à l'ancien différentiel, alors on remplace d par D et la case d'arrivée.
         caseDd,caseA=toutes_les_posi[i]
         D=differentiel(caseDd,caseA,etat)
         if D>d:
-            position= caseA
+            L = [caseA]
             d=D
+        elif D==d:
+            L.append(caseA)
+    position = rd.choice(L)
     return (position,d)
 
 
@@ -217,18 +216,11 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
 
 def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
     P,J,posi_pion,T=etat
-    etat[1]=7-J
+    if etat[1]==6:
+        etat[1]=0
+    etat[1]+=1
 
 
-
-def debut_jeu(mode_de_jeu,J): #fonction qui lance toutes les fonctions d'initialisation
-    P=init_plateau()
-    T=tableau_distance()
-    
-
-    posi_pion=initialisation_position_pion(plateau)
-
-    return P,J,posi_pion,T
 
 def demande_coup(etat):
     P,J,posi_pion,T=etat
@@ -260,16 +252,14 @@ def coup(etat,mode_de_jeu, J1):
         else:
             return  hasard(etat)
     if mode_de_jeu == 3:
-        if J == J1:
-            return meilleurpion(etat)
-        else:
-            return hasard(etat)
+        return meilleurpion(etat)
+
 
 def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.
     mode_de_jeu = int(input("Quel est le mode de jeu ?")) #rentrer : [humain,ordi](1) ou [humain,ordi_hazard](2) ou [ordi , ordi_hazard](3)
     joueurs = []
     if mode_de_jeu != 3:
-        J1 = input("Choississez la couleur de vos pions ")#Rentrer un entier entre 1 et 6
+        J1 = input("Choississez la couleur de vos pions")#Rentrer un entier entre 1 et 6
         J1=int(J1)
         J2 = 7-J1
     else:
@@ -278,9 +268,8 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
     joueurs.append(J1)
     joueurs.append(J2)
     J = rd.choice(joueurs) #choix du joueur qui commence la partie au hasard
-    etat= debut_jeu(mode_de_jeu,J)
+    etat= debut_jeu(J)
     P,J,posi_pion,T=etat
-    print(etat)
     fini= False
     S=0
     while not fini:
@@ -291,7 +280,8 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         change_joueur(etat)
         print(etat)
         S+=1
-    print('bravo_joueur_'+ str(J),S)
-
-
-
+    if etat[1]==1 :
+        etat[1]=6
+    else :
+        J = etat[1]-1
+    print('bravo_joueur_'+ str(etat[1]),S)
