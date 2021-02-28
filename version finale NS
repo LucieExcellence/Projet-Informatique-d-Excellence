@@ -21,29 +21,41 @@ ORDI_test=6
 
 def init_plateau():
     plateau= -np.ones((n,n))
+    tr_B=[]
+    tr_V=[]
+    tr_N=[]
+    tr_Bl=[]
+    tr_Ja=[]
+    tr_R=[]
     for i in range(4,13):
         for j in range (4,13):
             plateau[i,j]=0 # on créer un carré de 0 pour la zone jouable
     for i in range (0,4):
         for j in range (4,5+i):
             plateau[i,j]=Bl # on place les pions bleus (1)
+            tr_B.append((i,j))
     for i in range (9,13):
         for j in range (4,5+i-9):
             plateau[i,j]=V # on place les pions verts (4)
+            tr_V.append((i,j))
     for i in range (9,13):
         for j in range (13,14+i-9):
             plateau[i,j]=N # on place les pions noirs (5)
+            tr_N.append((i,j))
     for i in range (4,8):
         for j in range (i-4,4):
             plateau[i,j]=Blc # on place les pions blancs (2)
+            tr_Bl.append((i,j))
     for i in range (4,8):
         for j in range (i+5,13):
             plateau[i,j]=Ja # on place les pions jaunes (3)
+            tr_Ja.append((i,j))
     for i in range (13,17):
         for j in range(9+i-13,13):
             plateau[i,j]=R # on place les pions rouges (6)
-    return plateau
-plateau = init_plateau()
+            tr_R.append((i,j))
+    return [plateau,tr_B,tr_Bl,tr_Ja,tr_V,tr_N,tr_R]
+
 
 def tableau_distance(): # renvoie un tableau contenant les distances de chaque case à la case d'arrivée. Ce tableau fonctionne sur le carré central ( vert contre jaune)
     l=9*[0]
@@ -72,8 +84,8 @@ def initialisation_position_pion(plateau):
 def debut_jeu(J): #fonction qui lance toutes les fonctions d'initialisation
     P=init_plateau()
     T=tableau_distance()
-    posi_pion=initialisation_position_pion(plateau)
-    return [P,J,posi_pion,T]
+    posi_pion=initialisation_position_pion(P[0])
+    return [P[0],J,posi_pion,T]
 
 
 def mouv_simple_possible(caseD,etat):
@@ -81,10 +93,16 @@ def mouv_simple_possible(caseD,etat):
     P,J, posi_pion, T = etat
     l,c = caseD
     mouv_simple=[]
+    triangle=init_plateau()
     for (dl,dc) in direction:
-        if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0:
+        if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0 :
+
         # on vérifie que la case d'arrivée est libre et dans le plateau
             mouv_simple.append([(l,c),(l+dl,c+dc)])
+            for i in range(1,7):
+                if i!= J and i!= 7-J:
+                    if (l+dl,c+dc) in triangle[i]:
+                        mouv_simple.remove([(l,c),(l+dl,c+dc)])
     return mouv_simple
 
 
@@ -111,6 +129,7 @@ def deplace(etat,caseD,caseA): # on change les cases de depart et d'arrivée et 
 def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un pion donné en echainant des sauts #pour L il faut rentrer une liste vide
     P,J,posi_pion,T = etat
     chemin=[]
+    triangle=init_plateau()
     for caseA in mouv_saut_possible(caseD,etat):
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas
             chs=saut(etat,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle de départ
@@ -119,6 +138,12 @@ def saut(etat,L,caseD):#renvoie toutes les positions que va pouvoir atteindre un
             else :
                 for ch in chs: #sinon pour chaque nouvelle case possible, on note le chemin que l'on a fait pour y arriver
                     chemin.append([caseD]+ch)
+    for L in chemin:
+        for j in L:
+            for i in range(1,7):
+                if i!= J and i!= 7-J:
+                    if j in triangle[i]:
+                        L.remove(j)
     return(chemin)
 
 def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_simple_possible pour avoir la liste de toutes les cases atteignable
@@ -127,7 +152,10 @@ def toutes_les_positions(etat, caseD):#on fusionne les fonctionssaut et mouv_sim
     Y=[]
     S=saut(etat,L,caseD)
     for i in range(len(S)):
-        Y.append([S[i][0],S[i][-1]])
+        for j in S[i]:
+            Y.append([S[i][0],S[i][-1]])
+            dernier=S[i][-1]
+            S[i].remove(dernier)
     return  Y+ mouv_simple_possible(caseD,etat)
 
 def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour facilité les calcules de distances (plus facile a calculer dans unn carré que dans un  losange.
@@ -210,7 +238,8 @@ def fin_du_jeu(etat):#fonction qui détermine si il y a un gagnant
     for i in range(10):
         pion=posi_pion[J][i]
         d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée inférieure ou égale à 4 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
-        if d>4:
+        print(d,pion)
+        if d>3:
             return False
     return True
 
@@ -278,10 +307,10 @@ def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu
         deplace(etat,caseD,caseA)
         fini=fin_du_jeu(etat)
         change_joueur(etat)
-        print(etat)
+        print(etat[0],etat[1])
         S+=1
     if etat[1]==1 :
-        etat[1]=6
+        J=6
     else :
         J = etat[1]-1
-    print('bravo_joueur_'+ str(etat[1]),S)
+    print('bravo_joueur_',J,S)
