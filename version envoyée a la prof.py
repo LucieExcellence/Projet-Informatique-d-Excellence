@@ -1,16 +1,3 @@
-
-Aller au contenu
-Utiliser Gmail avec un lecteur d'écran
-Meet
-Nouvelle réunion
-Rejoindre une réunion
-Hangouts
-Conversations
-1,89 Go utilisés sur 15 Go
-Conditions d'utilisation · Confidentialité · Règlement du programme
-Dernière activité sur le compte : il y a 3 minutes
-Détails
-
 # CASTAN Nicolas  COIBA Simon CAMP Lucie FOLLIET Louise
 # Le programme conçu permet de jouer différents mode's' de jeu. Le mode de jeu 1 permet de jouer contre l'ordinateur (5 intelligences artificielles), le mode 2 de faire jouer l'ordinateur tout seul, 5 joueurs jouants au hasard et 1 intelligemment. Enfin le mode de jeu 3 permet de faire jouer 6 ordinateurs intelligents.
 #Lorsque vous jouez , vous pouvez le faire via l'interface graphique et pour lancer le jeu sans l'interface graphique prog_principal() permet de le faire dans la shell
@@ -47,32 +34,33 @@ def init_plateau():
             plateau[i,j]=0 # on créer un carré de 0 pour la zone jouable
     for i in range (0,4):
         for j in range (4,5+i):
-            plateau[i,j]=Bl # on place les pions bleus (1)
+            plateau[i,j]=Bl
             tr_B.append((i,j))
     for i in range (9,13):
         for j in range (4,5+i-9):
-            plateau[i,j]=V # on place les pions verts (4)
+            plateau[i,j]=V 
             tr_V.append((i,j))
     for i in range (9,13):
         for j in range (13,14+i-9):
-            plateau[i,j]=5 # on place les pions noirs (5)
+            plateau[i,j]=N 
             tr_N.append((i,j))
     for i in range (4,8):
         for j in range (i-4,4):
-            plateau[i,j]=Blc # on place les pions blancs (2)
+            plateau[i,j]=Blc 
             tr_Bl.append((i,j))
     for i in range (4,8):
         for j in range (i+5,13):
-            plateau[i,j]=Ja # on place les pions jaunes (3)
+            plateau[i,j]=Ja 
             tr_Ja.append((i,j))
     for i in range (13,17):
         for j in range(9+i-13,13):
-            plateau[i,j]=R # on place les pions rouges (6)
+            plateau[i,j]=R
             tr_R.append((i,j))
     return [plateau,tr_B,tr_Bl,tr_Ja,tr_V,tr_N,tr_R]
 
 
-def tableau_distance(): # renvoie un tableau contenant les distances de chaque case à la case d'arrivée. Ce tableau fonctionne sur le carré central ( vert contre jaune), il sera ensuite transposé pour chaque pion
+def tableau_distance(): 
+    '''renvoie un tableau contenant les distances de chaque case à la case d'arrivée. Ce tableau fonctionne sur le carré central ( vert contre jaune), il sera ensuite transposé pour chaque pion'''
     l=9*[0]
     for i in range(len(l)):
         l[i]=9*[0] # on créer une liste de 9 sous listes qui formeront le tableau
@@ -81,7 +69,8 @@ def tableau_distance(): # renvoie un tableau contenant les distances de chaque c
             l[j][i]=8-i+j # correspond à la distance entre la case voulue et la case objectif.
     return l
 
-def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central( vert contre jaune), on effectue une sorte de rotation du plateau pour faciliter les calculs de distances (plus facile a calculer dans un carré que dans un  losange.)
+def translation(etat,caseD):
+    '''fonction qui renvoie, pour une case de départ sa case équivalente dans le carré central(vert contre jaune), on effectue une translation du plateau pour faciliter les calculs de distances (plus facile a calculer dans un carré que dans un  losange.)'''
     P , J , posi_pion , T = etat
     l,c = caseD
     if J==Bl or J==R:
@@ -92,7 +81,7 @@ def translation(etat,caseD):# fonction qui renvoie, pour une case de départ sa 
 
 
 def initialisation_position_pion(plateau):
-    #renvoie une liste contenant les coordonées des pions de chaque joueur
+    '''renvoie une liste contenant les coordonées des pions de chaque joueur'''
     positions_pions=[[]] #numéro du joueur correspond au rang de la liste de ses pions dans positions_pions
     (l,c)=np.shape(plateau)
     for joueur in range (1,7):
@@ -105,7 +94,8 @@ def initialisation_position_pion(plateau):
     return positions_pions
 
 
-def debut_jeu(J):#fonction qui lance toutes les fonctions d'initialisation et renvoie l'état du jeu
+def debut_jeu(J):
+    '''fonction qui lance toutes les fonctions d'initialisation et renvoie l'état du jeu'''
     P=init_plateau()
     T=tableau_distance()
     posi_pion=initialisation_position_pion(P[0])
@@ -116,7 +106,7 @@ def debut_jeu(J):#fonction qui lance toutes les fonctions d'initialisation et re
 # FONCTIONS EFFECTUANT LES MOUVEMENTS ET RETOURNANT TOUTES LES POSITIONS ATTEIGNABLES PAR UN PION
 
 def mouv_simple_possible(caseD,etat):
-#renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple
+'''renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple'''
     P,J, posi_pion, T = etat
     l,c = caseD
     mouv_simple=[]
@@ -128,12 +118,12 @@ def mouv_simple_possible(caseD,etat):
             for i in range(1,7):
                 if i!= J and i!= 7-J:
                     if (l+dl,c+dc) in triangle[i]:
-                        mouv_simple.remove([(l,c),(l+dl,c+dc)]) #Si l'arrivée est dans un triangle adverse, on ne peut pas y aller
+                        mouv_simple.remove([(l,c),(l+dl,c+dc)]) #Si l'arrivée est dans un triangle adverse autre que celui d'en face, on ne peut pas y aller
     return mouv_simple
 
 
 def mouv_saut_possible(caseD, etat):
-#renvoie une liste de couples de coordonées caseD/caseA atteignables pour une caseD donnée en un déplacement sauté non enchaîné
+'''renvoie une liste de couples de coordonées caseD/caseA atteignables pour une caseD donnée en un déplacement sauté non enchaîné'''
     P,J,posi_pion , T =etat
     l,c = caseD
     mouv_saut=[]
@@ -145,7 +135,8 @@ def mouv_saut_possible(caseD, etat):
 
 
 
-def saut(etat,L,caseD):#renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts #L correspond à une liste vide une liste vide
+def saut(etat,L,caseD):
+'''renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
     P,J,posi_pion,T = etat
     chemin=[]
     triangle=init_plateau()
@@ -166,7 +157,8 @@ def saut(etat,L,caseD):#renvoie toutes les chemins de coordonnées caseD/caseA q
     return(chemin)
 
 
-def toutes_les_positions(etat, caseD):#on fusionne les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée
+def toutes_les_positions(etat, caseD):
+'''on fusionne les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
     P,J, posi_pion,T= etat
     L=[]
     Y=[]
@@ -183,7 +175,8 @@ def toutes_les_positions(etat, caseD):#on fusionne les fonctions saut et mouv_si
 
 # STRATEGIE: ON CHOISI LE PION QUI VA SE RAPPROCHER LE PLUS DU SOMMET OPPOSÉ (L'OBJECTIF)
 
-def distance(etat,caseD):#on récupère dans le tableau de distance la distance à l'objectif du pion donné par son équivalent dans le carré central via la fonction translation (vert contre jaune)
+def distance(etat,caseD):
+    '''récupère dans le tableau de distance la distance à l'objectif du pion donné par son équivalent dans le carré central via la fonction translation (vert contre jaune)'''
     P,J,posi_pion, T=etat
     l,c=translation(etat,caseD)
     if J== Bl or J==Blc or J==V:
@@ -192,12 +185,14 @@ def distance(etat,caseD):#on récupère dans le tableau de distance la distance 
         return 16-T[l-4][c-4]
 
 
-def differentiel(caseD,caseA,etat): #calcule la distance parcourue par un pion
+def differentiel(caseD,caseA,etat): 
+    '''calcule la distance parcourue par un pion'''
      P,J,posi_pion,T=etat
      return distance(etat,caseD)-distance(etat,caseA)
 
 
-def meilleur_position(etat,caseD):# on choisit la meilleure case atteignalble pour un pion donné (celle qui aura permis d'avancer le plus)
+def meilleur_position(etat,caseD):
+    '''on choisit la meilleure case atteignalble pour un pion donné (celle qui aura permis d'avancer le plus)'''
     P,J,posi_pion,T=etat
     d=0
     L=[caseD]
@@ -215,7 +210,8 @@ def meilleur_position(etat,caseD):# on choisit la meilleure case atteignalble po
 
 
 
-def meilleurpion(etat): #compare les différentiels entre les pions d'un joueur
+def meilleurpion(etat): 
+    '''compare les différentiels entre les pions d'un joueur'''
     P,J,posi_pion,T=etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
     caseA,Maxdif=meilleur_position(etat,caseD)
@@ -234,7 +230,8 @@ def meilleurpion(etat): #compare les différentiels entre les pions d'un joueur
 
 #EFFECTUER LE DEPLACEMENT
 
-def deplace(etat,caseD,caseA): # change les cases de depart,d'arrivée et la liste des positions du pion
+def deplace(etat,caseD,caseA): 
+    '''change les cases de depart,d'arrivée et la liste des positions du pion'''
     P,J,posi_pion,T =etat
     (i,j)=caseD
     (k,l)=caseA
@@ -246,7 +243,8 @@ def deplace(etat,caseD,caseA): # change les cases de depart,d'arrivée et la lis
     posi_pion[J].append(caseA) #on ajoute la position d'arrivée à la liste des pions du joueur
 
 
-def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.
+def change_joueur(etat):
+    '''fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.'''
     P,J,posi_pion,T=etat
     if etat[1]==6:
         etat[1]=0
@@ -256,7 +254,8 @@ def change_joueur(etat):# fonction qui permet d'effectuer la rotation des joueur
 # DEFINITION DES FONCTIONS QUI EFFECTUENT LES COUPS
 
 
-def hasard(etat):#renvoie un couple caseD/caseA possible aléatoirement pour l'ordinateur qui joue au hasard.
+def hasard(etat):
+    '''renvoie un couple caseD/caseA possible aléatoirement pour l'ordinateur qui joue au hasard.'''
     P,J,posi_pion,T=etat
     position=posi_pion[J]
     caseD=rd.choice(position)
@@ -266,11 +265,13 @@ def hasard(etat):#renvoie un couple caseD/caseA possible aléatoirement pour l'o
     return caseD,caseA#renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.
 
 
-def coup_ordi(etat): #même fonction que meilleur pion mais pour rendre la Programme plus lisible
+def coup_ordi(etat): 
+    '''même fonction que meilleur pion mais pour rendre la Programme plus lisible'''
     return meilleurpion(etat)
 
 
-def fin_du_jeu(etat):#fonction qui détermine si la partie est gagnée
+def fin_du_jeu(etat):
+    '''fonction qui détermine si la partie est gagnée'''
     P,J,posi_pion,T=etat
     for i in range(10):
         pion=posi_pion[J][i]
@@ -282,7 +283,8 @@ def fin_du_jeu(etat):#fonction qui détermine si la partie est gagnée
 
 
 
-def demande_coup(etat): # permet de jouer avec l'ordinateur sans l'interface graphique
+def demande_coup(etat): 
+    '''permet de jouer avec l'ordinateur sans l'interface graphique'''
     P,J,posi_pion,T=etat
     fini=False
     while not fini:
@@ -299,7 +301,8 @@ def demande_coup(etat): # permet de jouer avec l'ordinateur sans l'interface gra
             fini=False
             print('Le coup est impossible')
 
-def coup(etat,mode_de_jeu, J1): #en fonction du mode de jeu, va faire jouer l'ordinateur
+def coup(etat,mode_de_jeu, J1): 
+    '''en fonction du mode de jeu, va faire jouer l'ordinateur'''
     P,J,posi_pion,T=etat
     if mode_de_jeu == 1:
         if J == J1:
@@ -315,7 +318,8 @@ def coup(etat,mode_de_jeu, J1): #en fonction du mode de jeu, va faire jouer l'or
         return meilleurpion(etat)
 
 
-def prog_principal():#une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.
+def prog_principal():
+    '''une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.'''
     mode_de_jeu=3
     joueurs = []
     J1 = rd.randint(1,6)
@@ -450,5 +454,4 @@ matrice(etat)
 
 fen.mainloop()
 
-version finale projet info.py
-Affichage de version finale projet info.py en cours...
+
