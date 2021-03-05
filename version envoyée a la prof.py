@@ -142,8 +142,8 @@ def saut(etat,L,caseD):
     triangle=init_plateau()
     for caseA in mouv_saut_possible(caseD,etat):
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas
-            chs=saut(etat,L+[caseD],caseA) #on ajoute au chemin à ne pas emprunter la case d'où l'on vient et on recommence à chercher les sauts possibles depuis la case d'arrivée qui est la nouvelle case de départ
-            if len(chs)==0: #si il ne peut pas aller plus loin on note juste la case d'arrivée
+            chs=saut(etat,L+[caseD],caseA) 
+            if len(chs)==0: 
                 chemin.append([caseD,caseA])
             else :
                 for ch in chs: #sinon pour chaque nouvelle case possible, on note le chemin que l'on a fait pour y arriver
@@ -158,7 +158,7 @@ def saut(etat,L,caseD):
 
 
 def toutes_les_positions(etat, caseD):
-'''on fusionne les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
+'''on utilise les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
     P,J, posi_pion,T= etat
     L=[]
     Y=[]
@@ -166,7 +166,7 @@ def toutes_les_positions(etat, caseD):
     for i in range(len(S)):
         for j in S[i]:
             Y.append([S[i][0],S[i][-1]])
-            dernier=S[i][-1]#On reforme des couples caseD/caseA à partir des chemins renvoyez par saut
+            dernier=S[i][-1]#On reforme des couples caseD/caseA à partir des chemins renvoyé par saut
             S[i].remove(dernier)
     return  Y+ mouv_simple_possible(caseD,etat)
 
@@ -197,10 +197,10 @@ def meilleur_position(etat,caseD):
     d=0
     L=[caseD]
     toutes_les_posi= toutes_les_positions(etat, caseD)
-    for i in range(len(toutes_les_posi)):#on calcule pour un pion le différentiel de chaque case atteignable.
+    for i in range(len(toutes_les_posi)):
         caseDd,caseA=toutes_les_posi[i]
         D=differentiel(caseDd,caseA,etat)
-        if D>d:#On conserve la caseA correpondante au différentiel le plus grand
+        if D>d:
             L = [caseA]
             d=D
         elif D==d:
