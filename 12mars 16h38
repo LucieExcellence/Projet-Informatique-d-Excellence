@@ -7,6 +7,8 @@ import numpy as np
 import random as rd
 import math as m
 from tkinter import *
+from copy import deepcopy
+
 n=17
 #Chaque couleur de pion est représentée par un chiffre
 Bl=1
@@ -301,17 +303,25 @@ def prog_principal():
     '''une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.'''
     etat= debut_jeu()
     P,J,posi_pion,T=etat
+    deroulement=[]
     fini= False
     nb_coup=0
     while not fini:
         caseD, caseA = coup(etat)
+        deroulement.append([caseD,caseA,deepcopy(etat)])
         deplace(etat,caseD,caseA)
         fini=fin_du_jeu(etat)
         change_joueur(etat)
         nb_coup+=1
     print(nb_coup,'ont été joués')
-
-
+    move(deroulement,0)
+    
+def move(D,k):
+    if k <len(D):
+        caseD,caseA, etat=D[k]
+        deplace_G(caseA, caseD, etat)
+        can.after(280,move,D,k+1)
+    
 #INTERFACE GRAPHIQUE
 
 #On crée une fenêtre
@@ -320,7 +330,7 @@ def prog_principal():
 fen = Tk()
 fen.title("Jeu des dames chinoises")
 fen.geometry("650x650")
-fen.minsize(500,500)
+fen.minsize(750,750)
 bienvenue=Label(fen,text='Bienvenue !Vous êtes le joueur bleu',fg='red')
 regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit',fg='red')
 bienvenue.pack()
