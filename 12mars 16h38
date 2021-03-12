@@ -94,11 +94,12 @@ def initialisation_position_pion(plateau):
     return positions_pions
 
 
-def debut_jeu(J):
+def debut_jeu():
     '''fonction qui lance toutes les fonctions d'initialisation et renvoie l'état du jeu'''
     PT=init_plateau()
     T=tableau_distance()
     posi_pion=initialisation_position_pion(PT[0])
+    J = rd.choice([1,2,3,4,5,6]) #choix du joueur qui commence la partie au hasard
     return [PT,J,posi_pion,T]
 
 
@@ -330,13 +331,7 @@ def coup(etat,mode_de_jeu, J1):
 def prog_principal():
     '''une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.'''
     mode_de_jeu=3
-    joueurs = []
-    J1 = rd.randint(1,6)
-    J2 = 7-J1
-    joueurs.append(J1)
-    joueurs.append(J2)
-    J = rd.choice(joueurs) #choix du joueur qui commence la partie au hasard
-    etat= debut_jeu(J)
+    etat= debut_jeu()
     P,J,posi_pion,T=etat
     fini= False
     nb_coup=0
@@ -448,7 +443,7 @@ bouton.pack()
 
 #Lance l'interface graphique
 
-etat=debut_jeu(1)
+etat=debut_jeu()
 can.pack()
 OKA=False
 OKD=False
