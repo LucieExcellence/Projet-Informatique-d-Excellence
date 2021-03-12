@@ -385,6 +385,7 @@ def clique_gauche(event,etat):
 
 def clique_droit(event,etat):
     global OKD,OKA
+    etat[1]=1
     ya=m.floor(event.x//taille)
     xa=m.floor(event.y//taille)
     caseA=(xa,ya)
