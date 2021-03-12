@@ -274,7 +274,7 @@ def coup_ordi(etat):
     return meilleurpion(etat)
 
 
-def fin_du_jeu(etat,nb_coup):
+def fin_du_jeu(etat):
     '''fonction qui détermine si la partie est gagnée'''
     PT,J, posi_pion, T = etat
     for i in range(10):
@@ -286,7 +286,7 @@ def fin_du_jeu(etat,nb_coup):
         J=6
     else :
         J = etat[1]-1
-    print('bravo joueur ',J,'\n','nombre de coups :',nb_coup)
+    print('bravo joueur ',J,'\n')
     return True
 
 
