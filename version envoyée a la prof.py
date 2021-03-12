@@ -96,10 +96,10 @@ def initialisation_position_pion(plateau):
 
 def debut_jeu(J):
     '''fonction qui lance toutes les fonctions d'initialisation et renvoie l'état du jeu'''
-    P=init_plateau()
+    PT=init_plateau()
     T=tableau_distance()
-    posi_pion=initialisation_position_pion(P[0])
-    return [P[0],J,posi_pion,T]
+    posi_pion=initialisation_position_pion(PT[0])
+    return [PT,J,posi_pion,T]
 
 
 
@@ -107,10 +107,11 @@ def debut_jeu(J):
 
 def mouv_simple_possible(caseD,etat):
     '''renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple'''
-    P,J, posi_pion, T = etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     l,c = caseD
     mouv_simple=[]
-    triangle=init_plateau()
+    triangle=PT
     for (dl,dc) in direction:
         if -1<l+dl<17 and -1<c+dc<17 and P[l+dl,c+dc]==0 :
             # on vérifie que la case d'arrivée est libre et dans le plateau
@@ -124,7 +125,8 @@ def mouv_simple_possible(caseD,etat):
 
 def mouv_saut_possible(caseD, etat):
     '''renvoie une liste de couples de coordonées caseD/caseA atteignables pour une caseD donnée en un déplacement sauté non enchaîné'''
-    P,J,posi_pion , T =etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     l,c = caseD
     mouv_saut=[]
     for (dl,dc) in direction:
@@ -137,9 +139,10 @@ def mouv_saut_possible(caseD, etat):
 
 def saut(etat,L,caseD):
     '''renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
-    P,J,posi_pion,T = etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     chemin=[]
-    triangle=init_plateau()
+    triangle=PT
     for caseA in mouv_saut_possible(caseD,etat):
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas
             chs=saut(etat,L+[caseD],caseA) 
@@ -159,7 +162,7 @@ def saut(etat,L,caseD):
 
 def toutes_les_positions(etat, caseD):
     '''on utilise les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
-    P,J, posi_pion,T= etat
+    PT,J, posi_pion, T = etat
     L=[]
     Y=[]
     S=saut(etat,L,caseD)
@@ -177,7 +180,7 @@ def toutes_les_positions(etat, caseD):
 
 def distance(etat,caseD):
     '''récupère dans le tableau de distance la distance à l'objectif du pion donné par son équivalent dans le carré central via la fonction translation (vert contre jaune)'''
-    P,J,posi_pion, T=etat
+    PT,J, posi_pion, T = etat
     l,c=translation(etat,caseD)
     if J== Bl or J==Blc or J==V:
         return T[l-4][c-4]# le -4 vient du fait que notre tableau de distance ne prend pas en compte les lignes et colonnes hors du plateau
@@ -187,13 +190,13 @@ def distance(etat,caseD):
 
 def differentiel(caseD,caseA,etat): 
     '''calcule la distance parcourue par un pion'''
-     P,J,posi_pion,T=etat
-     return distance(etat,caseD)-distance(etat,caseA)
+    PT,J, posi_pion, T = etat
+    return distance(etat,caseD)-distance(etat,caseA)
 
 
 def meilleur_position(etat,caseD):
     '''on choisit la meilleure case atteignalble pour un pion donné (celle qui aura permis d'avancer le plus)'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     d=0
     L=[caseD]
     toutes_les_posi= toutes_les_positions(etat, caseD)
@@ -212,7 +215,7 @@ def meilleur_position(etat,caseD):
 
 def meilleurpion(etat): 
     '''compare les différentiels entre les pions d'un joueur'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
     caseA,Maxdif=meilleur_position(etat,caseD)
     meilleur_depart=posi_pion[J][0]
@@ -232,7 +235,8 @@ def meilleurpion(etat):
 
 def deplace(etat,caseD,caseA): 
     '''change les cases de depart,d'arrivée et la liste des positions du pion'''
-    P,J,posi_pion,T =etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     (i,j)=caseD
     (k,l)=caseA
     deplace_G(caseA,caseD,etat)
@@ -245,7 +249,7 @@ def deplace(etat,caseD,caseA):
 
 def change_joueur(etat):
     '''fonction qui permet d'effectuer la rotation des joueurs. Ici on decide de ne jouer qu'à deux joueurs, les bleus contre les rouges.'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     if etat[1]==6:
         etat[1]=0
     etat[1]+=1
@@ -256,7 +260,7 @@ def change_joueur(etat):
 
 def hasard(etat):
     '''renvoie un couple caseD/caseA possible aléatoirement pour l'ordinateur qui joue au hasard.'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     position=posi_pion[J]
     caseD=rd.choice(position)
     while toutes_les_positions(etat,caseD)==[]:
@@ -272,7 +276,7 @@ def coup_ordi(etat):
 
 def fin_du_jeu(etat):
     '''fonction qui détermine si la partie est gagnée'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     for i in range(10):
         pion=posi_pion[J][i]
         d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée <3 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
@@ -285,7 +289,7 @@ def fin_du_jeu(etat):
 
 def demande_coup(etat): 
     '''permet de jouer avec l'ordinateur sans l'interface graphique'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     fini=False
     while not fini:
         lD = int(input("sur quelle ligne se trouve le pion que vous voulez déplacer ?"))
@@ -303,7 +307,7 @@ def demande_coup(etat):
 
 def coup(etat,mode_de_jeu, J1): 
     '''en fonction du mode de jeu, va faire jouer l'ordinateur'''
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
     if mode_de_jeu == 1:
         if J == J1:
             return demande_coup(etat)
@@ -337,7 +341,6 @@ def prog_principal():
         fini=fin_du_jeu(etat)
         change_joueur(etat)
         S+=1
-        print(etat[0])
     if etat[1]==1 :
         J=6
     else :
@@ -371,7 +374,8 @@ can = Canvas(fen, width=600, height=600, bg='navajo white')
 
 
 def matrice(etat):#on modélise graphiquement le plateau
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     for i in range(17):
         for j in range(17):
             c=int(P[i,j])
@@ -382,7 +386,8 @@ def matrice(etat):#on modélise graphiquement le plateau
 
 
 def deplace_G(caseA,caseD,etat):# effectue le déplacement dans l'interface graphique
-    P,J,posi_pion,T=etat
+    PT,J, posi_pion, T = etat
+    P=PT[0]
     yd,xd=caseD
     ya,xa=caseA
     c=int(P[yd,xd])# On recupere la couleur du pion à déplacer
