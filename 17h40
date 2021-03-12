@@ -289,6 +289,8 @@ def fin_du_jeu(etat):
     else :
         J = etat[1]
     print('bravo joueur ',J,'\n')
+    perdu_joueur=Label(fen,text='Bravo joueur '+str(J),fg='red')
+    perdu_joueur.pack() 
     return True
 
 
@@ -315,11 +317,13 @@ def prog_principal():
     print(nb_coup,'ont été joués')
     move(deroulement,0)
     
+    
 def move(D,k):
     if k <len(D):
         caseD,caseA, etat=D[k]
         deplace_G(caseA, caseD, etat)
-        can.after(225,move,D,k+1)
+        can.after(20,move,D,k+1)
+           
     
 #INTERFACE GRAPHIQUE
 
@@ -331,11 +335,12 @@ fen.title("Jeu des dames chinoises")
 fen.geometry("650x650")
 fen.minsize(750,750)
 #On crée des labels 
-bienvenue=Label(fen,text='Bienvenue !Vous êtes le joueur bleu',fg='red')
-regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit',fg='red')
+bienvenue=Label(fen,text='Bienvenue !Vous êtes le joueur bleu',fg='salmon4')
+regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit',fg='salmon4')
 pas_possible=Label(fen,text='Le coup n\'est pas possible',fg='red')
 trompe_joueur=Label(fen,text='Vous vous êtes trompés de joueur',fg='red')
 bravo_joueur=Label(fen,text='Bravo vous avez gagné',fg='SeaGreen2')
+
 bienvenue.pack()
 regles.pack()
 
@@ -385,7 +390,6 @@ def clique_gauche(event,etat):
 
 def clique_droit(event,etat):
     global OKD,OKA
-    etat[1]=1
     ya=m.floor(event.x//taille)
     xa=m.floor(event.y//taille)
     caseA=(xa,ya)
@@ -404,6 +408,7 @@ def clique_droit(event,etat):
                 fini=fin_du_jeu(etat)
                 if fini :
                     print('bravo vous avez gagné')
+                    bravo_joueur.pack()
                 for j in range (2,7):
                     change_joueur(etat)
                     caseDO,caseAO=meilleurpion(etat)
