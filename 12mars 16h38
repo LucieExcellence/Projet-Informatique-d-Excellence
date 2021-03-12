@@ -292,56 +292,24 @@ def fin_du_jeu(etat):
 
 
 
-
-def demande_coup(etat): 
-    '''permet de jouer avec l'ordinateur sans l'interface graphique'''
+def coup(etat): 
     PT,J, posi_pion, T = etat
-    fini=False
-    while not fini:
-        lD = int(input("sur quelle ligne se trouve le pion que vous voulez déplacer ?"))
-        cD=int(input("sur quelle colonne se trouve le pion que vous voulez déplacer ?"))
-        caseD= (lD,cD)
-        lA = int(input("sur quelle ligne voulez-vous déplacer ce pion ?"))
-        cA=int(input("sur quelle colonne voulez-vous déplacer ce pion ?"))
-        caseA= (lA,cA)
-        if [caseD,caseA] in toutes_les_positions(etat, caseD):
-            fini=True
-            return caseD, caseA
-        else:
-            fini=False
-            print('Le coup est impossible')
-
-def coup(etat,mode_de_jeu, J1): 
-    '''en fonction du mode de jeu, va faire jouer l'ordinateur'''
-    PT,J, posi_pion, T = etat
-    if mode_de_jeu == 1:
-        if J == J1:
-            return demande_coup(etat)
-        else:
-            return meilleurpion(etat)
-    if mode_de_jeu == 2:
-        if J == J1:
-            return  meilleurpion(etat)
-        else:
-            return  hasard(etat)
-    if mode_de_jeu == 3:
-        return meilleurpion(etat)
+    return meilleurpion(etat)
 
 
 def prog_principal():
     '''une fois lancée, cette fonction exécute une partie jusqu'à sa fin et renvoie le numéro du joueur qui à gagné.'''
-    mode_de_jeu=3
     etat= debut_jeu()
     P,J,posi_pion,T=etat
     fini= False
     nb_coup=0
     while not fini:
-        caseD, caseA = coup(etat,mode_de_jeu,J1)
+        caseD, caseA = coup(etat)
         deplace(etat,caseD,caseA)
-        fini=fin_du_jeu(etat,nb_coup)
+        fini=fin_du_jeu(etat)
         change_joueur(etat)
         nb_coup+=1
-    
+    print(nb_coup,'ont été joués')
 
 
 #INTERFACE GRAPHIQUE
