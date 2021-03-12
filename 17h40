@@ -200,7 +200,7 @@ def differentiel(caseD,caseA,etat):
 def meilleur_position(etat,caseD):
     '''on choisit la meilleure case atteignalble pour un pion donné (celle qui aura permis d'avancer le plus)'''
     PT,J, posi_pion, T = etat
-    d=0
+    d=-1
     L=[caseD]
     toutes_les_posi= toutes_les_positions(etat, caseD)
     for i in range(len(toutes_les_posi)):
@@ -319,7 +319,7 @@ def move(D,k):
     if k <len(D):
         caseD,caseA, etat=D[k]
         deplace_G(caseA, caseD, etat)
-        can.after(280,move,D,k+1)
+        can.after(225,move,D,k+1)
     
 #INTERFACE GRAPHIQUE
 
