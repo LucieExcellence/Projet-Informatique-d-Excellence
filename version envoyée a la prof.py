@@ -106,7 +106,7 @@ def debut_jeu(J):
 # FONCTIONS EFFECTUANT LES MOUVEMENTS ET RETOURNANT TOUTES LES POSITIONS ATTEIGNABLES PAR UN PION
 
 def mouv_simple_possible(caseD,etat):
-'''renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple'''
+    '''renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple'''
     P,J, posi_pion, T = etat
     l,c = caseD
     mouv_simple=[]
@@ -123,7 +123,7 @@ def mouv_simple_possible(caseD,etat):
 
 
 def mouv_saut_possible(caseD, etat):
-'''renvoie une liste de couples de coordonées caseD/caseA atteignables pour une caseD donnée en un déplacement sauté non enchaîné'''
+    '''renvoie une liste de couples de coordonées caseD/caseA atteignables pour une caseD donnée en un déplacement sauté non enchaîné'''
     P,J,posi_pion , T =etat
     l,c = caseD
     mouv_saut=[]
@@ -136,7 +136,7 @@ def mouv_saut_possible(caseD, etat):
 
 
 def saut(etat,L,caseD):
-'''renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
+    '''renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
     P,J,posi_pion,T = etat
     chemin=[]
     triangle=init_plateau()
@@ -158,7 +158,7 @@ def saut(etat,L,caseD):
 
 
 def toutes_les_positions(etat, caseD):
-'''on utilise les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
+    '''on utilise les fonctions saut et mouv_simple_possible pour avoir la liste de tous les couples de coordonnées caseD/caseA atteignables pour une caseD donnée'''
     P,J, posi_pion,T= etat
     L=[]
     Y=[]
