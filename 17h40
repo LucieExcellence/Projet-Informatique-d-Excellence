@@ -141,7 +141,7 @@ def mouv_saut_possible(caseD, etat):
 
 
 def saut(etat,L,caseD):
-    '''renvoie toutes les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
+    '''fonction récursive : elle renvoie tous les chemins de coordonnées caseD/caseA que va pouvoir parcourir un pion donné en echainant des sauts, L correspond a la liste des positions où l'on est déja allé'''
     PT,J, posi_pion, T = etat
     P=PT[0]
     chemin=[]
