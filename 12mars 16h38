@@ -288,7 +288,7 @@ def fin_du_jeu(etat):
     if etat[1]==1 :
         J=6
     else :
-        J = etat[1]-1
+        J = etat[1]
     print('bravo joueur ',J,'\n')
     return True
 
