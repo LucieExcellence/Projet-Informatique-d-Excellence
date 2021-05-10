@@ -291,7 +291,6 @@ def fin_du_jeu(etat):
     print('bravo joueur ',J,'\n')
     perdu_joueur=Label(fen,text='Bravo joueur '+str(J),fg='red')
     perdu_joueur.pack()
-    print(etat)
     return True
 
 
