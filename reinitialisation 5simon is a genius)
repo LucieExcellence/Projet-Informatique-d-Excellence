@@ -111,7 +111,7 @@ def debut_jeu():
 def mouv_simple_possible(caseD,etat):
     '''renvoie une liste de couples de coordonnées caseD/caseA atteignables pour une caseD donnée en un déplacement simple'''
     PT,J, posi_pion, T = etat
-    P=PT[0]
+    P=PT[0] #on récupère uniquement le plateau et non les triangles interdits
     l,c = caseD
     mouv_simple=[]
     triangle=PT
@@ -365,7 +365,7 @@ def matrice(etat):#on modélise graphiquement le plateau
             c=int(P[i,j])
             if c!=-1:
                 can.create_oval(j*taille,i*taille,j*taille+r,i*taille+r,fill=couleur[c])
-    
+
 
 
 
