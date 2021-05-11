@@ -284,10 +284,6 @@ def fin_du_jeu(etat):
         d= distance(etat,pion) #si tous les pions sont à une distance de l'arrivée <3 alors ils sont tous rangés dans le triangle d'arrivée donc la partie est terminée
         if d>3:
             return False
-    if etat[1]==1 :
-        J=6
-    else :
-        J = etat[1]
     print('bravo joueur ',J,'\n')
     perdu_joueur=Label(fen,text='Bravo joueur '+str(J),fg='red')
     perdu_joueur.pack()
