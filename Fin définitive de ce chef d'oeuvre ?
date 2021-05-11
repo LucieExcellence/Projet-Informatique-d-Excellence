@@ -310,7 +310,7 @@ def prog_principal():
         fini=fin_du_jeu(etat)
         change_joueur(etat)
         nb_coup+=1
-    print(nb_coup,'coup ont été joués')
+    print(nb_coup,'coups ont été joués')
     move(deroulement,0)
 
 
