@@ -1,5 +1,5 @@
 # CASTAN Nicolas  COIBA Simon CAMP Lucie FOLLIET Louise
-# Le programme conçu permet de jouer différents mode's' de jeu. Le mode de jeu 1 permet de jouer contre l'ordinateur (5 intelligences artificielles), le mode 2 de faire jouer l'ordinateur tout seul, 5 joueurs jouants au hasard et 1 intelligemment. Enfin le mode de jeu 3 permet de faire jouer 6 ordinateurs intelligents.
+# Le programme conçu permet de jouer différents modes de jeu. Le mode de jeu 1 permet de jouer contre l'ordinateur (5 intelligences artificielles), le mode 2 de faire jouer l'ordinateur tout seul, 5 joueurs jouants au hasard et 1 intelligemment. Enfin le mode de jeu 3 permet de faire jouer 6 ordinateurs intelligents.
 #Lorsque vous jouez , vous pouvez le faire via l'interface graphique et pour lancer le jeu sans l'interface graphique prog_principal() permet de le faire dans la shell
 #si vous jouez via l'interface graphiqe, le bouton mode de jeu trois lance la partie selon le mode de jeu trois automatiqument, si vous voulez jouer vous même contre l'ordinateur, effectuer clic gauche, clic droit comme indiqué.
 
@@ -314,7 +314,7 @@ def prog_principal():
         fini=fin_du_jeu(etat)
         change_joueur(etat)
         nb_coup+=1
-    print(nb_coup,'ont été joués')
+    print(nb_coup,'coup ont été joués')
     move(deroulement,0)
 
 
@@ -354,8 +354,6 @@ can = Canvas(fen, width=600, height=600, bg='navajo white')
 
 
 
-
-
 def matrice(etat):#on modélise graphiquement le plateau
     PT,J, posi_pion, T = etat
     P=PT[0]
@@ -364,7 +362,6 @@ def matrice(etat):#on modélise graphiquement le plateau
             c=int(P[i,j])
             if c!=-1:
                 can.create_oval(j*taille,i*taille,j*taille+r,i*taille+r,fill=couleur[c])
-
 
 
 def deplace_G(caseA,caseD,etat):# effectue le déplacement dans l'interface graphique
@@ -387,13 +384,13 @@ def clique_gauche(event,etat):
     print(OKA,OKD)
 
 
+ 
 def clique_droit(event,etat):
     global OKD,OKA
     ya=m.floor(event.x//taille)
     xa=m.floor(event.y//taille)
     caseA=(xa,ya)
     OKA=True
-    print(etat)
     fini=False
     print(etat[1])
     if OKD and OKA:
@@ -412,6 +409,7 @@ def clique_droit(event,etat):
             print('vous vous êtes trompé de joueur')
             trompe_joueur.pack()
 
+
 def jeu_graphique(etat,caseD,caseA):
     deplace_G(caseA,caseD,etat)
     deplace(etat,caseD,caseA)
@@ -429,10 +427,12 @@ def jeu_graphique(etat,caseD,caseA):
     change_joueur(etat)
 
 
-def reinitialiser():
+
+def reinitialise():
     global etat
-    etat=debut_jeu()
+    etat = debut_jeu()
     matrice(etat)
+
 
 
 #récupère les clics de souris
@@ -442,18 +442,18 @@ can.bind("<Button-1>",lambda event: clique_gauche(event,etat))
 bouton=Button(fen,text='Si vous désirez faire jouer le programme tout seul cliquez ici',command=lambda:prog_principal())
 bouton.pack()
 
-bouton2=Button(fen,text='réinitialiser plateau',command=lambda:reinitialiser())
+bouton2=Button(fen,text='réinitialiser plateau',command=lambda:reinitialise())
 bouton2.pack()
 
 #Lance l'interface graphique
 
-etat=debut_jeu()
+reinitialise()
 can.pack()
 OKA=False
 OKD=False
 CaseD=(0,0)
 CaseA=(0,0)
-matrice(etat)
+
 
 fen.mainloop()
 
