@@ -1,8 +1,3 @@
-# CASTAN Nicolas  COIBA Simon CAMP Lucie FOLLIET Louise
-# Le programme conçu permet de jouer différents modes de jeu. Le mode de jeu 1 permet de jouer contre l'ordinateur (5 intelligences artificielles), le mode 2 de faire jouer l'ordinateur tout seul, 5 joueurs jouants au hasard et 1 intelligemment. Enfin le mode de jeu 3 permet de faire jouer 6 ordinateurs intelligents.
-#Lorsque vous jouez , vous pouvez le faire via l'interface graphique et pour lancer le jeu sans l'interface graphique prog_principal() permet de le faire dans la shell
-#si vous jouez via l'interface graphiqe, le bouton mode de jeu trois lance la partie selon le mode de jeu trois automatiqument, si vous voulez jouer vous même contre l'ordinateur, effectuer clic gauche, clic droit comme indiqué.
-
 import numpy as np
 import random as rd
 import math as m
@@ -179,7 +174,7 @@ def toutes_les_positions(etat, caseD):
 
 
 
-# STRATEGIE: ON CHOISI LE PION QUI VA SE RAPPROCHER LE PLUS DU SOMMET OPPOSÉ (L'OBJECTIF)
+# STRATEGIE: ON CHOISIT LE PION QUI VA SE RAPPROCHER LE PLUS DU SOMMET OPPOSÉ (L'OBJECTIF)
 
 def distance(etat,caseD):
     '''récupère dans le tableau de distance la distance à l'objectif du pion donné par son équivalent dans le carré central via la fonction translation (vert contre jaune)'''
