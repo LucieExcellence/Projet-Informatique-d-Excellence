@@ -40,19 +40,19 @@ def init_plateau():
             tr_B.append((i,j))
     for i in range (9,13):
         for j in range (4,5+i-9):
-            plateau[i,j]=V 
+            plateau[i,j]=V
             tr_V.append((i,j))
     for i in range (9,13):
         for j in range (13,14+i-9):
-            plateau[i,j]=N 
+            plateau[i,j]=N
             tr_N.append((i,j))
     for i in range (4,8):
         for j in range (i-4,4):
-            plateau[i,j]=Blc 
+            plateau[i,j]=Blc
             tr_Bl.append((i,j))
     for i in range (4,8):
         for j in range (i+5,13):
-            plateau[i,j]=Ja 
+            plateau[i,j]=Ja
             tr_Ja.append((i,j))
     for i in range (13,17):
         for j in range(9+i-13,13):
@@ -61,7 +61,7 @@ def init_plateau():
     return [plateau,tr_B,tr_Bl,tr_Ja,tr_V,tr_N,tr_R]
 
 
-def tableau_distance(): 
+def tableau_distance():
     '''renvoie un tableau contenant les distances de chaque case à la case d'arrivée. Ce tableau fonctionne sur le carré central ( vert contre jaune), il sera ensuite transposé pour chaque pion'''
     l=9*[0]
     for i in range(len(l)):
@@ -148,8 +148,8 @@ def saut(etat,L,caseD):
     triangle=PT
     for caseA in mouv_saut_possible(caseD,etat):
         if caseA not in L: #on vérifie que l'on ne revient pas sur nos pas
-            chs=saut(etat,L+[caseD],caseA) 
-            if len(chs)==0: 
+            chs=saut(etat,L+[caseD],caseA)
+            if len(chs)==0:
                 chemin.append([caseD,caseA])
             else :
                 for ch in chs: #sinon pour chaque nouvelle case possible, on note le chemin que l'on a fait pour y arriver
@@ -191,7 +191,7 @@ def distance(etat,caseD):
         return 16-T[l-4][c-4]
 
 
-def differentiel(caseD,caseA,etat): 
+def differentiel(caseD,caseA,etat):
     '''calcule la distance parcourue par un pion'''
     PT,J, posi_pion, T = etat
     return distance(etat,caseD)-distance(etat,caseA)
@@ -216,7 +216,7 @@ def meilleur_position(etat,caseD):
 
 
 
-def meilleurpion(etat): 
+def meilleurpion(etat):
     '''compare les différentiels entre les pions d'un joueur'''
     PT,J, posi_pion, T = etat
     caseD=posi_pion[J][0]#on prend comme position initiale la position du premier pion du joueur J
@@ -236,7 +236,7 @@ def meilleurpion(etat):
 
 #EFFECTUER LE DEPLACEMENT
 
-def deplace(etat,caseD,caseA): 
+def deplace(etat,caseD,caseA):
     '''change les cases de depart,d'arrivée et la liste des positions du pion'''
     PT,J, posi_pion, T = etat
     P=PT[0]
@@ -271,7 +271,7 @@ def hasard(etat):
     return caseD,caseA#renvoie la position du pion choisi au hasard, une position possible de ce pion choisie au hasard.
 
 
-def coup_ordi(etat): 
+def coup_ordi(etat):
     '''même fonction que meilleur pion mais pour rendre la Programme plus lisible'''
     return meilleurpion(etat)
 
@@ -290,12 +290,12 @@ def fin_du_jeu(etat):
         J = etat[1]
     print('bravo joueur ',J,'\n')
     perdu_joueur=Label(fen,text='Bravo joueur '+str(J),fg='red')
-    perdu_joueur.pack() 
+    perdu_joueur.pack()
     return True
 
 
 
-def coup(etat): 
+def coup(etat):
     PT,J, posi_pion, T = etat
     return meilleurpion(etat)
 
@@ -316,15 +316,15 @@ def prog_principal():
         nb_coup+=1
     print(nb_coup,'ont été joués')
     move(deroulement,0)
-    
-    
+
+
 def move(D,k):
     if k <len(D):
         caseD,caseA, etat=D[k]
         deplace_G(caseA, caseD, etat)
         can.after(20,move,D,k+1)
-           
-    
+
+
 #INTERFACE GRAPHIQUE
 
 #On crée une fenêtre
@@ -334,7 +334,7 @@ fen = Tk()
 fen.title("Jeu des dames chinoises")
 fen.geometry("650x650")
 fen.minsize(750,750)
-#On crée des labels 
+#On crée des labels
 bienvenue=Label(fen,text='Bienvenue !Vous êtes le joueur bleu',fg='salmon4')
 regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit',fg='salmon4')
 pas_possible=Label(fen,text='Le coup n\'est pas possible',fg='red')
@@ -354,10 +354,7 @@ can = Canvas(fen, width=600, height=600, bg='navajo white')
 
 
 
-
-
 def matrice(etat):#on modélise graphiquement le plateau
-    etat=debut_jeu()
     PT,J, posi_pion, T = etat
     P=PT[0]
     for i in range(17):
@@ -365,8 +362,6 @@ def matrice(etat):#on modélise graphiquement le plateau
             c=int(P[i,j])
             if c!=-1:
                 can.create_oval(j*taille,i*taille,j*taille+r,i*taille+r,fill=couleur[c])
-
-
 
 
 def deplace_G(caseA,caseD,etat):# effectue le déplacement dans l'interface graphique
@@ -427,6 +422,13 @@ def clique_droit(event,etat):
             trompe_joueur.pack()
 
 
+def reinitialise():
+    global etat
+    etat = debut_jeu()
+    matrice(etat)
+
+
+
 #récupère les clics de souris
 can.bind("<Button-3>",lambda event: clique_droit(event,etat))
 can.bind("<Button-1>",lambda event: clique_gauche(event,etat))
@@ -434,18 +436,18 @@ can.bind("<Button-1>",lambda event: clique_gauche(event,etat))
 bouton=Button(fen,text='Si vous désirez faire jouer le programme tout seul cliquez ici',command=lambda:prog_principal())
 bouton.pack()
 
-bouton2=Button(fen,text='réinitialiser plateau',command=lambda:matrice(etat))
+bouton2=Button(fen,text='réinitialiser plateau',command=lambda:reinitialise())
 bouton2.pack()
 
 #Lance l'interface graphique
 
-etat=debut_jeu()
+reinitialise()
 can.pack()
 OKA=False
 OKD=False
 CaseD=(0,0)
 CaseA=(0,0)
-matrice(etat)
+
 
 fen.mainloop()
 
