@@ -322,7 +322,8 @@ couleur=['navajo white','blue','white','yellow','green','black','red']
 can = Canvas(fen, width=600, height=600, bg='navajo white')
 
 
-def matrice(etat):#on modélise graphiquement le plateau
+def matrice(etat):
+    '''on modélise graphiquement le plateau'''
     PT,J, posi_pion, T = etat
     P=PT[0]
     for i in range(17):
@@ -332,7 +333,8 @@ def matrice(etat):#on modélise graphiquement le plateau
                 can.create_oval(j*taille,i*taille,j*taille+r,i*taille+r,fill=couleur[c])
 
 
-def deplace_G(caseA,caseD,etat):# effectue le déplacement dans l'interface graphique
+def deplace_G(caseA,caseD,etat):
+    '''effectue le déplacement dans l'interface graphique'''
     PT,J, posi_pion, T = etat
     P=PT[0]
     yd,xd=caseD
