@@ -312,8 +312,8 @@ fen.minsize(750,750)
 
 #On crée des labels
 
-bienvenue=Label(fen,text='Bienvenue !Vous êtes le joueur bleu',fg='salmon4')
-regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit',fg='salmon4')
+bienvenue=Label(fen,text='Bienvenue ! Vous êtes le joueur bleu',fg='salmon4')
+regles=Label(fen,text='Pour jouer selectionnez un pion de départ avec le clic gauche et une case arrivée avec le clic droit, \n la diagonale haut droit-bas gauche est interdite',fg='salmon4')
 pas_possible=Label(fen,text='Le coup n\'est pas possible',fg='red')
 trompe_joueur=Label(fen,text='Vous vous êtes trompés de joueur',fg='red')
 bravo_joueur=Label(fen,text='Bravo vous avez gagné',fg='SeaGreen2')
